@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幼小衔接乐园 - 边玩边学</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 动画背景装饰 */
+        .floating-shapes {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s infinite;
+        }
+
+        .shape:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { top: 60%; left: 80%; animation-delay: -5s; }
+        .shape:nth-child(3) { top: 40%; left: 30%; animation-delay: -10s; }
+        .shape:nth-child(4) { top: 80%; left: 50%; animation-delay: -15s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        /* 主容器 */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 头部 */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: none;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        /* 星星动画 */
+        .stars-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .star {
+            font-size: 2em;
+            animation: twinkle 1s infinite alternate;
+        }
+
+        .star:nth-child(2) { animation-delay: 0.2s; }
+        .star:nth-child(3) { animation-delay: 0.4s; }
+        .star:nth-child(4) { animation-delay: 0.6s; }
+        .star:nth-child(5) { animation-delay: 0.8s; }
+
+        @keyframes twinkle {
+            from { transform: scale(1); opacity: 0.5; }
+            to { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* 分数显示 */
+        .score-board {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 15px 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score-board .icon {
+            font-size: 2em;
+        }
+
+        .score-board .score {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #e17055;
+        }
+
+        /* 游戏选择区 */
+        .game-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            border: 4px solid transparent;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-card.active {
+            border-color: #e17055;
+            transform: scale(1.05);
+        }
+
+        .game-card .icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .game-card h3 {
+            font-size: 1.5em;
+            color: #2d3436;
+            margin-bottom: 10px;
+        }
+
+        .game-card p {
+            color: #636e72;
+            font-size: 1em;
+        }
+
+        /* 游戏区域 */
+        .game-area {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 40px;
+            min-height: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            display: none;
+        }
+
+        .game-area.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .game-title {
+            text-align: center;
+            font-size: 2em;
+            color: #2d3436;
+            margin-bottom: 30px;
+        }
+
+        /* 返回按钮 */
+        .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* 进度条 */
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #dfe6e9;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00b894, #55efc4);
+            border-radius: 15px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #636e72;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        /* 识字游戏样式 */
+        .character-display {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .big-character {
+            font-size: 8em;
+            color: #2d3436;
+            text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pinyin {
+            font-size: 2em;
+            color: #e17055;
+            margin-top: 10px;
+        }
+
+        .word-example {
+            font-size: 1.5em;
+            color: #636e72;
+            margin-top: 15px;
+        }
+
+        /* 选择按钮 */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .option-btn {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            border: none;
+            padding: 25px;
+            border-radius: 20px;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(9, 132, 227, 0.3);
+        }
+
+        .option-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(9, 132, 227, 0.4);
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, #00b894, #55efc4);
+            animation: correctPulse 0.5s ease;
+        }
+
+        .option-btn.wrong {
+            background: linear-gradient(135deg, #e17055, #d63031);
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* 数学游戏 */
+        .math-display {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .math-question {
+            font-size: 4em;
+            color: #2d3436;
+            margin-bottom: 20px;
+        }
+
+        .math-visual {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .fruit-icon {
+            font-size: 3em;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .math-input {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .math-input input {
+            width: 120px;
+            height: 80px;
+            font-size: 3em;
+            text-align: center;
+            border: 4px solid #74b9ff;
+            border-radius: 20px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .math-input input:focus {
+            border-color: #0984e3;
+            box-shadow: 0 0 30px rgba(9, 132, 227, 0.3);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 25px;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(232, 67, 147, 0.4);
+        }
+
+        /* 认知游戏 */
+        .cognition-area {
+            text-align: center;
+        }
+
+        .category-title {
+            font-size: 2em;
+            color: #636e72;
+            margin-bottom: 30px;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 20px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .item-card {
+            background: linear-gradient(135deg, #fdcb6e, #f39c12);
+            border-radius: 20px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 4px solid transparent;
+        }
+
+        .item-card:hover {
+            transform: scale(1.1);
+        }
+
+        .item-card.selected {
+            border-color: #e17055;
+            box-shadow: 0 10px 30px rgba(225, 112, 85, 0.4);
+        }
+
+        .item-card .icon {
+            font-size: 3em;
+            display: block;
+        }
+
+        .item-card .name {
+            font-size: 1em;
+            color: #2d3436;
+            margin-top: 8px;
+        }
+
+        /* 拼音游戏 */
+        .pinyin-game {
+            text-align: center;
+        }
+
+        .pinyin-display {
+            font-size: 6em;
+            color: #2d3436;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .letter-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .letter-btn {
+            width: 80px;
+            height: 80px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #55efc4, #00b894);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 184, 148, 0.3);
+        }
+
+        .letter-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* 比较游戏 */
+        .compare-area {
+            text-align: center;
+        }
+
+        .compare-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .compare-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            max-width: 200px;
+        }
+
+        .compare-icon {
+            font-size: 3em;
+        }
+
+        .compare-symbol {
+            font-size: 4em;
+            color: #636e72;
+        }
+
+        .compare-btns {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .compare-btn {
+            width: 100px;
+            height: 100px;
+            font-size: 3em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .compare-btn.greater {
+            background: linear-gradient(135deg, #00b894, #55efc4);
+            color: white;
+        }
+
+        .compare-btn.less {
+            background: linear-gradient(135deg, #e17055, #fdcb6e);
+            color: white;
+        }
+
+        .compare-btn.equal {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+        }
+
+        .compare-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* 结果弹窗 */
+        .result-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .result-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .result-content {
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            text-align: center;
+            animation: bounceIn 0.5s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .result-content .emoji {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .result-content h2 {
+            font-size: 2.5em;
+            color: #2d3436;
+            margin-bottom: 15px;
+        }
+
+        .result-content p {
+            font-size: 1.3em;
+            color: #636e72;
+            margin-bottom: 30px;
+        }
+
+        .result-content .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .result-content .btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* 奖励动画 */
+        .confetti {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .score-board {
+                top: auto;
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .big-character {
+                font-size: 5em;
+            }
+
+            .math-question {
+                font-size: 2.5em;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .compare-display {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景装饰 -->
+    <div class="floating-shapes">
+        <div class="shape">⭐</div>
+        <div class="shape">🌟</div>
+        <div class="shape">✨</div>
+        <div class="shape">💫</div>
+    </div>
+
+    <!-- 分数板 -->
+    <div class="score-board">
+        <span class="icon">🏆</span>
+        <span class="score" id="totalScore">0</span>
+        <span style="color: #e17055;">分</span>
+    </div>
+
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>🌈 幼小衔接乐园 🌈</h1>
+            <p>边玩边学，快乐成长！</p>
+            <div class="stars-container">
+                <span class="star">⭐</span>
+                <span class="star">🌟</span>
+                <span class="star">✨</span>
+                <span class="star">🌟</span>
+                <span class="star">⭐</span>
+            </div>
+        </div>
+
+        <!-- 游戏选择 -->
+        <div class="game-selector" id="gameSelector">
+            <div class="game-card" onclick="startGame('character')">
+                <span class="icon">📚</span>
+                <h3>识字乐园</h3>
+                <p>认识汉字朋友</p>
+            </div>
+            <div class="game-card" onclick="startGame('math')">
+                <span class="icon">🔢</span>
+                <h3>数学天地</h3>
+                <p>学习加减运算</p>
+            </div>
+            <div class="game-card" onclick="startGame('cognition')">
+                <span class="icon">🎨</span>
+                <h3>认知世界</h3>
+                <p>认识颜色形状</p>
+            </div>
+            <div class="game-card" onclick="startGame('pinyin')">
+                <span class="icon">🎵</span>
+                <h3>拼音王国</h3>
+                <p>学习声母韵母</p>
+            </div>
+            <div class="game-card" onclick="startGame('compare')">
+                <span class="icon">⚖️</span>
+                <h3>比较大小</h3>
+                <p>认识数字大小</p>
+            </div>
+            <div class="game-card" onclick="startGame('pattern')">
+                <span class="icon">🔄</span>
+                <h3>找规律</h3>
+                <p>发现图形规律</p>
+            </div>
+        </div>
+
+        <!-- 识字游戏 -->
+        <div class="game-area" id="characterGame">
+            <button class="back-btn" onclick="backToMenu()">🏠 返回</button>
+            <h2 class="game-title">📚 识字乐园</h2>
+            <div class="progress-text">第 <span id="charProgress">1</span> / 10 题</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="charProgressBar"></div>
+            </div>
+            <div class="character-display">
+                <div class="big-character" id="bigCharacter">大</div>
+                <div class="pinyin" id="pinyin">dà</div>
+                <div class="word-example" id="wordExample">大象、大小</div>
+            </div>
+            <div class="options-grid" id="charOptions">
+                <!-- 选项动态生成 -->
+            </div>
+        </div>
+
+        <!-- 数学游戏 -->
+        <div class="game-area" id="mathGame">
+            <button class="back-btn" onclick="backToMenu()">🏠 返回</button>
+            <h2 class="game-title">🔢 数学天地</h2>
+            <div class="progress-text">第 <span id="mathProgress">1</span> / 10 题</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="mathProgressBar"></div>
+            </div>
+            <div class="math-display">
+                <div class="math-question" id="mathQuestion">3 + 2 = ?</div>
+                <div class="math-visual" id="mathVisual"></div>
+                <div class="math-input">
+                    <input type="number" id="mathAnswer" min="0" max="20">
+                </div>
+                <button class="submit-btn" onclick="checkMathAnswer()">提交答案 ✓</button>
+            </div>
+        </div>
+
+        <!-- 认知游戏 -->
+        <div class="game-area" id="cognitionGame">
+            <button class="back-btn" onclick="backToMenu()">🏠 返回</button>
+            <h2 class="game-title">🎨 认知世界</h2>
+            <div class="progress-text">第 <span id="cogProgress">1</span> / 8 题</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="cogProgressBar"></div>
+            </div>
+            <div class="cognition-area">
+                <div class="category-title" id="categoryTitle">请选择所有的<span id="targetCategory">红色</span>物品：</div>
+                <div class="items-grid" id="cogItems">
+                    <!-- 动态生成 -->
+                </div>
+                <button class="submit-btn" onclick="checkCognitionAnswer()">确认选择 ✓</button>
+            </div>
+        </div>
+
+        <!-- 拼音游戏 -->
+        <div class="game-area" id="pinyinGame">
+            <button class="back-btn" onclick="backToMenu()">🏠 返回</button>
+            <h2 class="game-title">🎵 拼音王国</h2>
+            <div class="progress-text">第 <span id="pinyinProgress">1</span> / 10 题</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="pinyinProgressBar"></div>
+            </div>
+            <div class="pinyin-game">
+                <div class="pinyin-display" id="pinyinQuestion">bā</div>
+                <p style="font-size: 1.3em; color: #636e72; margin-bottom: 30px;">请选择正确的声母：</p>
+                <div class="letter-options" id="letterOptions">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 比较游戏 -->
+        <div class="game-area" id="compareGame">
+            <button class="back-btn" onclick="backToMenu()">🏠 返回</button>
+            <h2 class="game-title">⚖️ 比较大小</h2>
+            <div class="progress-text">第 <span id="compareProgress">1</span> / 10 题</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="compareProgressBar"></div>
+            </div>
+            <div class="compare-area">
+                <div class="compare-display">
+                    <div class="compare-group" id="compareLeft"></div>
+                    <div class="compare-symbol">?</div>
+                    <div class="compare-group" id="compareRight"></div>
+                </div>
+                <p style="font-size: 1.3em; color: #636e72; margin-bottom: 30px;">请选择正确的关系符号：</p>
+                <div class="compare-btns">
+                    <button class="compare-btn greater" onclick="checkCompare('>')">&gt;</button>
+                    <button class="compare-btn equal" onclick="checkCompare('=')">=</button>
+                    <button class="compare-btn less" onclick="checkCompare('<')">&lt;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 找规律游戏 -->
+        <div class="game-area" id="patternGame">
+            <button class="back-btn" onclick="backToMenu()">🏠 返回</button>
+            <h2 class="game-title">🔄 找规律</h2>
+            <div class="progress-text">第 <span id="patternProgress">1</span> / 8 题</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="patternProgressBar"></div>
+            </div>
+            <div style="text-align: center;">
+                <div class="pattern-display" id="patternDisplay" style="font-size: 3em; margin-bottom: 30px;"></div>
+                <p style="font-size: 1.3em; color: #636e72; margin-bottom: 30px;">下一个是什么？</p>
+                <div class="letter-options" id="patternOptions">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 结果弹窗 -->
+    <div class="result-modal" id="resultModal">
+        <div class="result-content">
+            <div class="emoji" id="resultEmoji">🎉</div>
+            <h2 id="resultTitle">太棒了！</h2>
+            <p id="resultText">你获得了 100 分！</p>
+            <button class="btn" onclick="closeModal()">继续学习</button>
+            <button class="btn" onclick="backToMenu(); closeModal();">返回主页</button>
+        </div>
+    </div>
+
+    <!-- 彩带容器 -->
+    <div class="confetti" id="confetti"></div>
+
+    <script>
+        // 游戏数据
+        let totalScore = 0;
+        let currentGame = null;
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+
+        // 识字数据
+        const characters = [
+            { char: '大', pinyin: 'dà', words: '大象、大小', options: ['小', '大', '上', '下'], answer: '大' },
+            { char: '小', pinyin: 'xiǎo', words: '小鸟、小事', options: ['大', '多', '小', '少'], answer: '小' },
+            { char: '上', pinyin: 'shàng', words: '上面、上学', options: ['下', '上', '左', '右'], answer: '上' },
+            { char: '下', pinyin: 'xià', words: '下面、下雨', options: ['上', '下', '前', '后'], answer: '下' },
+            { char: '日', pinyin: 'rì', words: '日子、日月', options: ['月', '日', '星', '光'], answer: '日' },
+            { char: '月', pinyin: 'yuè', words: '月亮、月饼', options: ['日', '星', '月', '光'], answer: '月' },
+            { char: '水', pinyin: 'shuǐ', words: '水果、喝水', options: ['火', '水', '山', '风'], answer: '水' },
+            { char: '火', pinyin: 'huǒ', words: '火车、火焰', options: ['水', '土', '木', '火'], answer: '火' },
+            { char: '山', pinyin: 'shān', words: '大山、高山', options: ['水', '山', '田', '地'], answer: '山' },
+            { char: '人', pinyin: 'rén', words: '人们、人类', options: ['大', '人', '小', '天'], answer: '人' }
+        ];
+
+        // 数学数据
+        const mathProblems = [];
+        function generateMathProblems() {
+            for (let i = 0; i < 10; i++) {
+                const a = Math.floor(Math.random() * 10) + 1;
+                const b = Math.floor(Math.random() * 10) + 1;
+                const isAdd = Math.random() > 0.5;
+                if (isAdd) {
+                    mathProblems.push({ a, b, op: '+', answer: a + b });
+                } else if (a >= b) {
+                    mathProblems.push({ a, b, op: '-', answer: a - b });
+                } else {
+                    mathProblems.push({ a: b, b: a, op: '-', answer: b - a });
+                }
+            }
+        }
+        generateMathProblems();
+
+        // 认知数据
+        const cognitionItems = [
+            { icon: '🍎', name: '苹果', color: '红色', shape: '圆形' },
+            { icon: '🍌', name: '香蕉', color: '黄色', shape: '长形' },
+            { icon: '🥝', name: '猕猴桃', color: '绿色', shape: '椭圆形' },
+            { icon: '🍇', name: '葡萄', color: '紫色', shape: '圆形' },
+            { icon: '🍊', name: '橙子', color: '橙色', shape: '圆形' },
+            { icon: '🍓', name: '草莓', color: '红色', shape: '心形' },
+            { icon: '🥕', name: '胡萝卜', color: '橙色', shape: '长形' },
+            { icon: '🥦', name: '西兰花', color: '绿色', shape: '树形' }
+        ];
+
+        const cognitionTasks = [
+            { type: 'color', value: '红色' },
+            { type: 'color', value: '黄色' },
+            { type: 'color', value: '绿色' },
+            { type: 'shape', value: '圆形' },
+            { type: 'shape', value: '长形' },
+            { type: 'color', value: '紫色' },
+            { type: 'color', value: '橙色' },
+            { type: 'shape', value: '心形' }
+        ];
+
+        // 拼音数据
+        const pinyinData = [
+            { pinyin: 'bā', shengmu: 'b', options: ['b', 'p', 'm', 'f'] },
+            { pinyin: 'pō', shengmu: 'p', options: ['b', 'p', 'm', 'f'] },
+            { pinyin: 'mā', shengmu: 'm', options: ['b', 'p', 'm', 'f'] },
+            { pinyin: 'fēi', shengmu: 'f', options: ['b', 'p', 'm', 'f'] },
+            { pinyin: 'dā', shengmu: 'd', options: ['d', 't', 'n', 'l'] },
+            { pinyin: 'tī', shengmu: 't', options: ['d', 't', 'n', 'l'] },
+            { pinyin: 'nǎ', shengmu: 'n', options: ['d', 't', 'n', 'l'] },
+            { pinyin: 'lè', shengmu: 'l', options: ['d', 't', 'n', 'l'] },
+            { pinyin: 'gē', shengmu: 'g', options: ['g', 'k', 'h', 'j'] },
+            { pinyin: 'kū', shengmu: 'k', options: ['g', 'k', 'h', 'j'] }
+        ];
+
+        // 比较数据
+        let compareData = [];
+        function generateCompareData() {
+            compareData = [];
+            for (let i = 0; i < 10; i++) {
+                const left = Math.floor(Math.random() * 8) + 1;
+                const right = Math.floor(Math.random() * 8) + 1;
+                let answer = left > right ? '>' : (left < right ? '<' : '=');
+                compareData.push({ left, right, answer });
+            }
+        }
+        generateCompareData();
+
+        // 找规律数据
+        const patterns = [
+            { sequence: ['🔴', '🔵', '🔴', '🔵', '🔴'], answer: '🔵', options: ['🔴', '🔵', '🟢'] },
+            { sequence: ['⭐', '⭐', '🌙', '⭐', '⭐'], answer: '🌙', options: ['⭐', '🌙', '☀️'] },
+            { sequence: ['🍎', '🍊', '🍎', '🍊', '🍎'], answer: '🍊', options: ['🍎', '🍊', '🍋'] },
+            { sequence: ['🐱', '🐶', '🐱', '🐶', '🐱'], answer: '🐶', options: ['🐱', '🐶', '🐰'] },
+            { sequence: ['🔵', '🔵', '🔴', '🔵', '🔵'], answer: '🔴', options: ['🔵', '🔴', '🟢'] },
+            { sequence: ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣'], answer: '6️⃣', options: ['5️⃣', '6️⃣', '7️⃣'] },
+            { sequence: ['🔺', '🔻', '🔺', '🔻', '🔺'], answer: '🔻', options: ['🔺', '🔻', '🔵'] },
+            { sequence: ['🟡', '🟡', '🟢', '🟡', '🟡'], answer: '🟢', options: ['🟡', '🟢', '🔵'] }
+        ];
+
+        // 开始游戏
+        function startGame(gameType) {
+            currentGame = gameType;
+            currentQuestion = 0;
+            correctAnswers = 0;
+
+            // 隐藏选择器，显示对应游戏
+            document.getElementById('gameSelector').style.display = 'none';
+            document.querySelectorAll('.game-area').forEach(el => el.classList.remove('active'));
+
+            switch(gameType) {
+                case 'character':
+                    document.getElementById('characterGame').classList.add('active');
+                    loadCharacterQuestion();
+                    break;
+                case 'math':
+                    document.getElementById('mathGame').classList.add('active');
+                    generateMathProblems();
+                    loadMathQuestion();
+                    break;
+                case 'cognition':
+                    document.getElementById('cognitionGame').classList.add('active');
+                    loadCognitionQuestion();
+                    break;
+                case 'pinyin':
+                    document.getElementById('pinyinGame').classList.add('active');
+                    loadPinyinQuestion();
+                    break;
+                case 'compare':
+                    document.getElementById('compareGame').classList.add('active');
+                    generateCompareData();
+                    loadCompareQuestion();
+                    break;
+                case 'pattern':
+                    document.getElementById('patternGame').classList.add('active');
+                    loadPatternQuestion();
+                    break;
+            }
+        }
+
+        // 返回菜单
+        function backToMenu() {
+            document.getElementById('gameSelector').style.display = 'grid';
+            document.querySelectorAll('.game-area').forEach(el => el.classList.remove('active'));
+            currentGame = null;
+        }
+
+        // 识字游戏
+        function loadCharacterQuestion() {
+            const data = characters[currentQuestion];
+            document.getElementById('bigCharacter').textContent = data.char;
+            document.getElementById('pinyin').textContent = data.pinyin;
+            document.getElementById('wordExample').textContent = data.words;
+            document.getElementById('charProgress').textContent = currentQuestion + 1;
+            document.getElementById('charProgressBar').style.width = ((currentQuestion + 1) / 10 * 100) + '%';
+
+            const optionsHtml = shuffleArray([...data.options]).map(opt => 
+                `<button class="option-btn" onclick="checkCharacterAnswer('${opt}', '${data.answer}')">${opt}</button>`
+            ).join('');
+            document.getElementById('charOptions').innerHTML = optionsHtml;
+        }
+
+        function checkCharacterAnswer(selected, correct) {
+            const btn = event.target;
+            if (selected === correct) {
+                btn.classList.add('correct');
+                correctAnswers++;
+                addScore(10);
+                playSound('correct');
+                setTimeout(() => nextCharacterQuestion(), 1000);
+            } else {
+                btn.classList.add('wrong');
+                playSound('wrong');
+            }
+        }
+
+        function nextCharacterQuestion() {
+            currentQuestion++;
+            if (currentQuestion >= 10) {
+                showResult();
+            } else {
+                loadCharacterQuestion();
+            }
+        }
+
+        // 数学游戏
+        function loadMathQuestion() {
+            const problem = mathProblems[currentQuestion];
+            document.getElementById('mathQuestion').textContent = `${problem.a} ${problem.op} ${problem.b} = ?`;
+            document.getElementById('mathProgress').textContent = currentQuestion + 1;
+            document.getElementById('mathProgressBar').style.width = ((currentQuestion + 1) / 10 * 100) + '%';
+            document.getElementById('mathAnswer').value = '';
+
+            // 可视化
+            const visual = document.getElementById('mathVisual');
+            visual.innerHTML = '';
+            const fruits = ['🍎', '🍊', '🍋', '🍇', '🍓'];
+            const fruit = fruits[Math.floor(Math.random() * fruits.length)];
+            
+            for (let i = 0; i < problem.a; i++) {
+                visual.innerHTML += `<span class="fruit-icon">${fruit}</span>`;
+            }
+            visual.innerHTML += `<span style="font-size: 2em; margin: 0 15px;">${problem.op}</span>`;
+            for (let i = 0; i < problem.b; i++) {
+                visual.innerHTML += `<span class="fruit-icon">${fruit}</span>`;
+            }
+        }
+
+        function checkMathAnswer() {
+            const answer = parseInt(document.getElementById('mathAnswer').value);
+            const problem = mathProblems[currentQuestion];
+            
+            if (answer === problem.answer) {
+                correctAnswers++;
+                addScore(10);
+                playSound('correct');
+                showFeedback(true);
+                setTimeout(() => nextMathQuestion(), 1000);
+            } else {
+                playSound('wrong');
+                showFeedback(false);
+                document.getElementById('mathAnswer').value = '';
+            }
+        }
+
+        function nextMathQuestion() {
+            currentQuestion++;
+            if (currentQuestion >= 10) {
+                showResult();
+            } else {
+                loadMathQuestion();
+            }
+        }
+
+        // 认知游戏
+        let selectedItems = [];
+
+        function loadCognitionQuestion() {
+            const task = cognitionTasks[currentQuestion];
+            document.getElementById('cogProgress').textContent = currentQuestion + 1;
+            document.getElementById('cogProgressBar').style.width = ((currentQuestion + 1) / 8 * 100) + '%';
+            
+            if (task.type === 'color') {
+                document.getElementById('targetCategory').innerHTML = `<span style="color: ${getColorCode(task.value)};">${task.value}</span>`;
+                document.getElementById('categoryTitle').innerHTML = `请选择所有的<span id="targetCategory">${document.getElementById('targetCategory').outerHTML}</span>物品：`;
+            } else {
+                document.getElementById('targetCategory').textContent = task.value;
+                document.getElementById('categoryTitle').innerHTML = `请选择所有的<span id="targetCategory">${task.value}</span>物品：`;
+            }
+            
+            selectedItems = [];
+            const itemsHtml = cognitionItems.map((item, index) => 
+                `<div class="item-card" id="cogItem${index}" onclick="toggleItem(${index})">
+                    <span class="icon">${item.icon}</span>
+                    <span class="name">${item.name}</span>
+                </div>`
+            ).join('');
+            document.getElementById('cogItems').innerHTML = itemsHtml;
+        }
+
+        function getColorCode(color) {
+            const colors = {
+                '红色': '#e74c3c',
+                '黄色': '#f1c40f',
+                '绿色': '#27ae60',
+                '紫色': '#9b59b6',
+                '橙色': '#e67e22'
+            };
+            return colors[color] || '#333';
+        }
+
+        function toggleItem(index) {
+            const card = document.getElementById(`cogItem${index}`);
+            if (selectedItems.includes(index)) {
+                selectedItems = selectedItems.filter(i => i !== index);
+                card.classList.remove('selected');
+            } else {
+                selectedItems.push(index);
+                card.classList.add('selected');
+            }
+        }
+
+        function checkCognitionAnswer() {
+            const task = cognitionTasks[currentQuestion];
+            const correctItems = cognitionItems
+                .map((item, index) => ({ item, index }))
+                .filter(({ item }) => task.type === 'color' ? item.color === task.value : item.shape === task.value)
+                .map(({ index }) => index);
+            
+            const isCorrect = JSON.stringify(selectedItems.sort()) === JSON.stringify(correctItems.sort());
+            
+            if (isCorrect) {
+                correctAnswers++;
+                addScore(15);
+                playSound('correct');
+            } else {
+                playSound('wrong');
+            }
+            
+            showFeedback(isCorrect);
+            setTimeout(() => nextCognitionQuestion(), 1000);
+        }
+
+        function nextCognitionQuestion() {
+            currentQuestion++;
+            if (currentQuestion >= 8) {
+                showResult();
+            } else {
+                loadCognitionQuestion();
+            }
+        }
+
+        // 拼音游戏
+        function loadPinyinQuestion() {
+            const data = pinyinData[currentQuestion];
+            document.getElementById('pinyinQuestion').textContent = data.pinyin;
+            document.getElementById('pinyinProgress').textContent = currentQuestion + 1;
+            document.getElementById('pinyinProgressBar').style.width = ((currentQuestion + 1) / 10 * 100) + '%';
+
+            const optionsHtml = shuffleArray([...data.options]).map(opt => 
+                `<button class="letter-btn" onclick="checkPinyinAnswer('${opt}', '${data.shengmu}')">${opt}</button>`
+            ).join('');
+            document.getElementById('letterOptions').innerHTML = optionsHtml;
+        }
+
+        function checkPinyinAnswer(selected, correct) {
+            const btn = event.target;
+            if (selected === correct) {
+                btn.style.background = 'linear-gradient(135deg, #00b894, #55efc4)';
+                correctAnswers++;
+                addScore(10);
+                playSound('correct');
+                setTimeout(() => nextPinyinQuestion(), 1000);
+            } else {
+                btn.style.background = 'linear-gradient(135deg, #e17055, #d63031)';
+                playSound('wrong');
+            }
+        }
+
+        function nextPinyinQuestion() {
+            currentQuestion++;
+            if (currentQuestion >= 10) {
+                showResult();
+            } else {
+                loadPinyinQuestion();
+            }
+        }
+
+        // 比较游戏
+        function loadCompareQuestion() {
+            const data = compareData[currentQuestion];
+            document.getElementById('compareProgress').textContent = currentQuestion + 1;
+            document.getElementById('compareProgressBar').style.width = ((currentQuestion + 1) / 10 * 100) + '%';
+
+            // 显示苹果
+            const leftHtml = Array(data.left).fill('🍎').map(f => `<span class="compare-icon">${f}</span>`).join('');
+            const rightHtml = Array(data.right).fill('🍎').map(f => `<span class="compare-icon">${f}</span>`).join('');
+            
+            document.getElementById('compareLeft').innerHTML = leftHtml;
+            document.getElementById('compareRight').innerHTML = rightHtml;
+        }
+
+        function checkCompare(answer) {
+            const data = compareData[currentQuestion];
+            if (answer === data.answer) {
+                correctAnswers++;
+                addScore(10);
+                playSound('correct');
+                showFeedback(true);
+            } else {
+                playSound('wrong');
+                showFeedback(false);
+            }
+            setTimeout(() => nextCompareQuestion(), 1000);
+        }
+
+        function nextCompareQuestion() {
+            currentQuestion++;
+            if (currentQuestion >= 10) {
+                showResult();
+            } else {
+                loadCompareQuestion();
+            }
+        }
+
+        // 找规律游戏
+        function loadPatternQuestion() {
+            const data = patterns[currentQuestion];
+            document.getElementById('patternProgress').textContent = currentQuestion + 1;
+            document.getElementById('patternProgressBar').style.width = ((currentQuestion + 1) / 8 * 100) + '%';
+            
+            document.getElementById('patternDisplay').innerHTML = data.sequence.map(s => `<span style="margin: 0 5px;">${s}</span>`).join('') + '<span style="margin: 0 5px; color: #aaa;">❓</span>';
+
+            const optionsHtml = data.options.map(opt => 
+                `<button class="letter-btn" onclick="checkPatternAnswer('${opt}', '${data.answer}')">${opt}</button>`
+            ).join('');
+            document.getElementById('patternOptions').innerHTML = optionsHtml;
+        }
+
+        function checkPatternAnswer(selected, correct) {
+            if (selected === correct) {
+                event.target.style.background = 'linear-gradient(135deg, #00b894, #55efc4)';
+                correctAnswers++;
+                addScore(15);
+                playSound('correct');
+                setTimeout(() => nextPatternQuestion(), 1000);
+            } else {
+                event.target.style.background = 'linear-gradient(135deg, #e17055, #d63031)';
+                playSound('wrong');
+            }
+        }
+
+        function nextPatternQuestion() {
+            currentQuestion++;
+            if (currentQuestion >= 8) {
+                showResult();
+            } else {
+                loadPatternQuestion();
+            }
+        }
+
+        // 显示结果
+        function showResult() {
+            const score = correctAnswers * 10;
+            let emoji, title;
+            
+            if (correctAnswers >= 8) {
+                emoji = '🏆';
+                title = '太棒了！';
+                createConfetti();
+            } else if (correctAnswers >= 5) {
+                emoji = '😊';
+                title = '做得不错！';
+            } else {
+                emoji = '💪';
+                title = '继续加油！';
+            }
+
+            document.getElementById('resultEmoji').textContent = emoji;
+            document.getElementById('resultTitle').textContent = title;
+            document.getElementById('resultText').textContent = `你答对了 ${correctAnswers} 题，获得了 ${score} 分！`;
+            document.getElementById('resultModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('resultModal').classList.remove('show');
+        }
+
+        // 添加分数
+        function addScore(points) {
+            totalScore += points;
+            document.getElementById('totalScore').textContent = totalScore;
+        }
+
+        // 播放音效
+        function playSound(type) {
+            // 简单的音效提示（可以替换为实际音效）
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (type === 'correct') {
+                oscillator.frequency.value = 523.25; // C5
+                gainNode.gain.value = 0.3;
+            } else {
+                oscillator.frequency.value = 200;
+                gainNode.gain.value = 0.3;
+            }
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        // 显示反馈
+        function showFeedback(isCorrect) {
+            const msg = isCorrect ? '✓ 正确！' : '✗ 再试试';
+            // 可以添加更明显的反馈
+        }
+
+        // 创建彩带效果
+        function createConfetti() {
+            const confettiContainer = document.getElementById('confetti');
+            confettiContainer.innerHTML = '';
+            const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd'];
+            
+            for (let i = 0; i < 50; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDelay = Math.random() * 2 + 's';
+                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                confettiContainer.appendChild(piece);
+            }
+        }
+
+        // 工具函数：打乱数组
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // 键盘支持
+        document.addEventListener('keydown', (e) => {
+            if (currentGame === 'math' && e.key === 'Enter') {
+                checkMathAnswer();
+            }
+        });
+    </script>
+</body>
+</html>
