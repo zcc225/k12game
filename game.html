@@ -667,6 +667,245 @@
                 gap: 20px;
             }
         }
+
+        /* 拼图游戏样式 */
+        .puzzle-type-btn, .difficulty-btn {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+        }
+
+        .puzzle-type-btn:hover, .difficulty-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .puzzle-type-btn.active, .difficulty-btn.active {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            box-shadow: 0 5px 20px rgba(232, 67, 147, 0.4);
+        }
+
+        .puzzle-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .puzzle-target-area {
+            background: linear-gradient(135deg, #dfe6e9, #b2bec3);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .puzzle-target-title, .puzzle-pieces-title {
+            text-align: center;
+            font-size: 1.3em;
+            color: #2d3436;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .puzzle-grid {
+            display: grid;
+            gap: 5px;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 15px;
+        }
+
+        .puzzle-slot {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 3px dashed #636e72;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5em;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .puzzle-slot.highlight {
+            border-color: #00b894;
+            background: rgba(0, 184, 148, 0.2);
+            transform: scale(1.05);
+        }
+
+        .puzzle-slot.filled {
+            border-style: solid;
+            border-color: #00b894;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .puzzle-slot.correct {
+            border-color: #00b894;
+            background: rgba(0, 184, 148, 0.3);
+            animation: correctPulse 0.5s ease;
+        }
+
+        .puzzle-slot.wrong {
+            border-color: #e17055;
+            background: rgba(225, 112, 85, 0.3);
+            animation: shake 0.5s ease;
+        }
+
+        .puzzle-knowledge {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            border-radius: 20px;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(253, 203, 110, 0.4);
+            max-width: 500px;
+        }
+
+        .knowledge-icon {
+            font-size: 2.5em;
+        }
+
+        .knowledge-text {
+            font-size: 1.2em;
+            color: #2d3436;
+            line-height: 1.5;
+        }
+
+        .puzzle-pieces-area {
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 15px 40px rgba(108, 92, 231, 0.4);
+        }
+
+        .puzzle-pieces {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            padding: 10px;
+        }
+
+        .puzzle-piece {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #55efc4, #00b894);
+            border: none;
+            border-radius: 15px;
+            font-size: 2.5em;
+            cursor: grab;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 184, 148, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+        }
+
+        .puzzle-piece:hover {
+            transform: scale(1.1) rotate(3deg);
+            box-shadow: 0 12px 35px rgba(0, 184, 148, 0.5);
+        }
+
+        .puzzle-piece.dragging {
+            opacity: 0.7;
+            cursor: grabbing;
+            transform: scale(1.15);
+        }
+
+        .puzzle-piece.placed {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .hint-btn, .reset-btn {
+            background: linear-gradient(135deg, #fdcb6e, #f39c12);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+        }
+
+        .hint-btn:hover, .reset-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* 拼图完成动画 */
+        .puzzle-complete-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .puzzle-complete-content {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            animation: bounceIn 0.5s ease;
+        }
+
+        .puzzle-complete-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .puzzle-complete-title {
+            font-size: 2em;
+            color: #2d3436;
+            margin-bottom: 15px;
+        }
+
+        .puzzle-knowledge-reveal {
+            background: linear-gradient(135deg, #dfe6e9, #b2bec3);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            font-size: 1.2em;
+            color: #2d3436;
+        }
+
+        /* 拼图块颜色变体 */
+        .puzzle-piece.color-1 { background: linear-gradient(135deg, #ff6b6b, #ee5a5a); }
+        .puzzle-piece.color-2 { background: linear-gradient(135deg, #feca57, #f9a826); }
+        .puzzle-piece.color-3 { background: linear-gradient(135deg, #48dbfb, #0abde3); }
+        .puzzle-piece.color-4 { background: linear-gradient(135deg, #ff9ff3, #f368e0); }
+        .puzzle-piece.color-5 { background: linear-gradient(135deg, #54a0ff, #2e86de); }
+        .puzzle-piece.color-6 { background: linear-gradient(135deg, #5f27cd, #341f97); }
+        .puzzle-piece.color-7 { background: linear-gradient(135deg, #00d2d3, #01a3a4); }
+        .puzzle-piece.color-8 { background: linear-gradient(135deg, #ff9f43, #ee5a24); }
+        .puzzle-piece.color-9 { background: linear-gradient(135deg, #10ac84, #1dd1a1); }
+        .puzzle-piece.color-10 { background: linear-gradient(135deg, #5f27cd, #a55eea); }
+        .puzzle-piece.color-11 { background: linear-gradient(135deg, #eb4d4b, #ff7979); }
+        .puzzle-piece.color-12 { background: linear-gradient(135deg, #6ab04c, #badc58); }
+        .puzzle-piece.color-13 { background: linear-gradient(135deg, #e056fd, #be2edd); }
+        .puzzle-piece.color-14 { background: linear-gradient(135deg, #686de0, #4834d4); }
+        .puzzle-piece.color-15 { background: linear-gradient(135deg, #30336b, #596275); }
+        .puzzle-piece.color-16 { background: linear-gradient(135deg, #f8a5c2, #f78fb3); }
     </style>
 </head>
 <body>
@@ -730,6 +969,11 @@
                 <span class="icon">🔄</span>
                 <h3>找规律</h3>
                 <p>发现图形规律</p>
+            </div>
+            <div class="game-card" onclick="startGame('puzzle')">
+                <span class="icon">🧩</span>
+                <h3>拼图乐园</h3>
+                <p>拼图学知识</p>
             </div>
         </div>
 
@@ -840,6 +1084,60 @@
                 <div class="letter-options" id="patternOptions">
                     <!-- 动态生成 -->
                 </div>
+            </div>
+        </div>
+
+        <!-- 拼图游戏 -->
+        <div class="game-area" id="puzzleGame">
+            <button class="back-btn" onclick="backToMenu()">🏠 返回</button>
+            <h2 class="game-title">🧩 拼图乐园</h2>
+            <div class="progress-text">第 <span id="puzzleProgress">1</span> / 5 关</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="puzzleProgressBar"></div>
+            </div>
+
+            <!-- 拼图类型选择 -->
+            <div id="puzzleTypeSelector" style="text-align: center; margin-bottom: 30px;">
+                <span style="font-size: 1.2em; color: #636e72; margin-right: 15px;">选择拼图类型：</span>
+                <button class="puzzle-type-btn active" onclick="selectPuzzleType('number')">🔢 数字</button>
+                <button class="puzzle-type-btn" onclick="selectPuzzleType('letter')">🔤 字母</button>
+                <button class="puzzle-type-btn" onclick="selectPuzzleType('shape')">🔷 图形</button>
+                <button class="puzzle-type-btn" onclick="selectPuzzleType('chinese')">汉字</button>
+            </div>
+
+            <!-- 难度选择 -->
+            <div id="puzzleDifficultySelector" style="text-align: center; margin-bottom: 30px;">
+                <span style="font-size: 1.2em; color: #636e72; margin-right: 15px;">难度：</span>
+                <button class="difficulty-btn active" onclick="selectDifficulty(2)">简单 2×2</button>
+                <button class="difficulty-btn" onclick="selectDifficulty(3)">中等 3×3</button>
+                <button class="difficulty-btn" onclick="selectDifficulty(4)">困难 4×4</button>
+            </div>
+
+            <!-- 拼图区域 -->
+            <div class="puzzle-container">
+                <!-- 目标区域 -->
+                <div class="puzzle-target-area">
+                    <div class="puzzle-target-title">🎯 目标位置</div>
+                    <div class="puzzle-grid" id="puzzleTargetGrid"></div>
+                </div>
+
+                <!-- 知识点展示 -->
+                <div class="puzzle-knowledge" id="puzzleKnowledge">
+                    <div class="knowledge-icon">💡</div>
+                    <div class="knowledge-text" id="knowledgeText">完成拼图学习知识！</div>
+                </div>
+
+                <!-- 拼图块区域 -->
+                <div class="puzzle-pieces-area">
+                    <div class="puzzle-pieces-title">🧩 拖动拼图块</div>
+                    <div class="puzzle-pieces" id="puzzlePieces"></div>
+                </div>
+            </div>
+
+            <!-- 提示按钮 -->
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="hint-btn" onclick="showPuzzleHint()">💡 提示</button>
+                <button class="reset-btn" onclick="resetCurrentPuzzle()">🔄 重置</button>
             </div>
         </div>
     </div>
@@ -959,6 +1257,140 @@
             { sequence: ['🟡', '🟡', '🟢', '🟡', '🟡'], answer: '🟢', options: ['🟡', '🟢', '🔵'] }
         ];
 
+        // 拼图游戏数据
+        const puzzleData = {
+            number: {
+                name: '数字拼图',
+                items: [
+                    { 
+                        sequence: ['1', '2', '3', '4'], 
+                        knowledge: '数字1-4的认识：1像铅笔细又长，2像小鸭水上漂，3像耳朵听声音，4像红旗迎风飘',
+                        hint: '按从小到大的顺序排列'
+                    },
+                    { 
+                        sequence: ['5', '6', '7', '8'], 
+                        knowledge: '数字5-8的认识：5像钩子挂东西，6像哨子吹得响，7像镰刀割青草，8像葫芦挂藤上',
+                        hint: '按从小到大的顺序排列'
+                    },
+                    { 
+                        sequence: ['1', '3', '5', '7'], 
+                        knowledge: '奇数：1、3、5、7、9...都是奇数，也叫单数，它们不能被2整除',
+                        hint: '这是奇数序列，每次加2'
+                    },
+                    { 
+                        sequence: ['2', '4', '6', '8'], 
+                        knowledge: '偶数：2、4、6、8、10...都是偶数，也叫双数，它们能被2整除',
+                        hint: '这是偶数序列，每次加2'
+                    },
+                    { 
+                        sequence: ['①', '②', '③', '④'], 
+                        knowledge: '序数词：第1、第2、第3、第4，表示顺序的数叫序数',
+                        hint: '按顺序排列带圈的数字'
+                    }
+                ]
+            },
+            letter: {
+                name: '字母拼图',
+                items: [
+                    { 
+                        sequence: ['A', 'B', 'C', 'D'], 
+                        knowledge: '英文字母A-D：A是第一个字母，B像耳朵，C像月亮，D像竖琴',
+                        hint: '按字母表顺序排列'
+                    },
+                    { 
+                        sequence: ['E', 'F', 'G', 'H'], 
+                        knowledge: '英文字母E-H：E像梳子，F像旗帜，G像眼镜，H像梯子',
+                        hint: '按字母表顺序排列'
+                    },
+                    { 
+                        sequence: ['a', 'b', 'c', 'd'], 
+                        knowledge: '小写字母a-d：a像苹果，b像棒球棒，c像卷发，d像鼓槌',
+                        hint: '按小写字母顺序排列'
+                    },
+                    { 
+                        sequence: ['a', 'e', 'i', 'o'], 
+                        knowledge: '元音字母：a、e、i、o、u是元音字母，发音时声带振动',
+                        hint: '这些是元音字母的一部分'
+                    },
+                    { 
+                        sequence: ['A', 'E', 'I', 'O'], 
+                        knowledge: '大写元音字母：A、E、I、O、U，每个单词至少有一个元音',
+                        hint: '大写元音字母序列'
+                    }
+                ]
+            },
+            shape: {
+                name: '图形拼图',
+                items: [
+                    { 
+                        sequence: ['🔴', '🔵', '🟢', '🟡'], 
+                        knowledge: '基本颜色：红色、蓝色、绿色、黄色是最基本的颜色，可以混合出其他颜色',
+                        hint: '按彩虹颜色顺序排列'
+                    },
+                    { 
+                        sequence: ['🔺', '🔷', '🟡', '⬛'], 
+                        knowledge: '基本图形：三角形有3条边，正方形有4条相等的边，圆形没有角',
+                        hint: '三角形、方形、圆形、长方形'
+                    },
+                    { 
+                        sequence: ['❤️', '⭐', '🌙', '☀️'], 
+                        knowledge: '特殊符号：爱心代表爱，星星代表希望，月亮代表夜晚，太阳代表白天',
+                        hint: '心形、星形、月牙、太阳'
+                    },
+                    { 
+                        sequence: ['🍎', '🍊', '🍋', '🍇'], 
+                        knowledge: '水果颜色：苹果是红色的，橙子是橙色的，柠檬是黄色的，葡萄是紫色的',
+                        hint: '按水果颜色排列'
+                    },
+                    { 
+                        sequence: ['🌸', '🌺', '🌻', '🌼'], 
+                        knowledge: '花朵认识：樱花粉白色，三角梅红色，向日葵黄色，雏菊白色黄色',
+                        hint: '不同种类的花朵'
+                    }
+                ]
+            },
+            chinese: {
+                name: '汉字拼图',
+                items: [
+                    { 
+                        sequence: ['一', '二', '三', '四'], 
+                        knowledge: '数字汉字：一、二、三、四、五是汉字数字，笔画从上到下、从左到右',
+                        hint: '按数字顺序排列汉字'
+                    },
+                    { 
+                        sequence: ['上', '中', '下'], 
+                        knowledge: '方位汉字：上、中、下表示位置关系，上是高处，下是低处，中是中间',
+                        hint: '按位置从上到下排列'
+                    },
+                    { 
+                        sequence: ['大', '小', '多', '少'], 
+                        knowledge: '比较汉字：大和小相反，多和少相反，学习汉字可以认识反义词',
+                        hint: '大、小、多、少的比较'
+                    },
+                    { 
+                        sequence: ['日', '月', '水', '火'], 
+                        knowledge: '自然汉字：日是太阳，月是月亮，水是液体，火是热的，都是自然事物',
+                        hint: '自然事物的汉字'
+                    },
+                    { 
+                        sequence: ['春', '夏', '秋', '冬'], 
+                        knowledge: '四季汉字：春天温暖花开，夏天炎热，秋天凉爽丰收，冬天寒冷下雪',
+                        hint: '按季节顺序排列'
+                    }
+                ]
+            }
+        };
+
+        // 拼图游戏状态
+        let puzzleType = 'number';
+        let puzzleDifficulty = 2;
+        let currentPuzzleIndex = 0;
+        let puzzleCorrectCount = 0;
+        let currentPuzzleSequence = [];
+        let placedPieces = {};
+        let draggedPiece = null;
+        let hintsUsed = 0;
+
         // 开始游戏
         function startGame(gameType) {
             currentGame = gameType;
@@ -995,6 +1427,10 @@
                 case 'pattern':
                     document.getElementById('patternGame').classList.add('active');
                     loadPatternQuestion();
+                    break;
+                case 'puzzle':
+                    document.getElementById('puzzleGame').classList.add('active');
+                    loadPuzzleGame();
                     break;
             }
         }
@@ -1366,6 +1802,402 @@
                 [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
             }
             return newArray;
+        }
+
+        // ==================== 拼图游戏逻辑 ====================
+
+        // 选择拼图类型
+        function selectPuzzleType(type) {
+            puzzleType = type;
+            document.querySelectorAll('.puzzle-type-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            currentPuzzleIndex = 0;
+            loadPuzzleGame();
+        }
+
+        // 选择难度
+        function selectDifficulty(level) {
+            puzzleDifficulty = level;
+            document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            loadPuzzleGame();
+        }
+
+        // 加载拼图游戏
+        function loadPuzzleGame() {
+            const data = puzzleData[puzzleType];
+            const totalPuzzles = Math.min(data.items.length, 5);
+            
+            document.getElementById('puzzleProgress').textContent = currentPuzzleIndex + 1;
+            document.getElementById('puzzleProgressBar').style.width = ((currentPuzzleIndex + 1) / totalPuzzles * 100) + '%';
+
+            // 获取当前拼图数据
+            const puzzleItem = data.items[currentPuzzleIndex % data.items.length];
+            currentPuzzleSequence = puzzleItem.sequence;
+
+            // 根据难度调整拼图块数量
+            const totalPieces = puzzleDifficulty * puzzleDifficulty;
+            const displaySequence = currentPuzzleSequence.slice(0, totalPieces);
+
+            // 更新知识点
+            document.getElementById('knowledgeText').textContent = puzzleItem.knowledge;
+
+            // 重置状态
+            placedPieces = {};
+            hintsUsed = 0;
+
+            // 创建目标网格
+            createTargetGrid(totalPieces);
+            
+            // 创建拼图块
+            createPuzzlePieces(displaySequence);
+
+            // 更新网格样式
+            const grid = document.getElementById('puzzleTargetGrid');
+            grid.style.gridTemplateColumns = `repeat(${puzzleDifficulty}, 1fr)`;
+        }
+
+        // 创建目标网格
+        function createTargetGrid(totalPieces) {
+            const grid = document.getElementById('puzzleTargetGrid');
+            grid.innerHTML = '';
+
+            for (let i = 0; i < totalPieces; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'puzzle-slot';
+                slot.dataset.index = i;
+                
+                // 拖放事件
+                slot.addEventListener('dragover', handleDragOver);
+                slot.addEventListener('dragenter', handleDragEnter);
+                slot.addEventListener('dragleave', handleDragLeave);
+                slot.addEventListener('drop', handleDrop);
+                
+                // 触摸事件
+                slot.addEventListener('touchend', handleTouchEnd);
+                
+                grid.appendChild(slot);
+            }
+        }
+
+        // 创建拼图块
+        function createPuzzlePieces(sequence) {
+            const piecesContainer = document.getElementById('puzzlePieces');
+            piecesContainer.innerHTML = '';
+
+            // 打乱顺序
+            const shuffledSequence = shuffleArray([...sequence]);
+
+            shuffledSequence.forEach((item, index) => {
+                const piece = document.createElement('div');
+                piece.className = `puzzle-piece color-${(index % 16) + 1}`;
+                piece.textContent = item;
+                piece.dataset.value = item;
+                piece.draggable = true;
+                
+                // 拖拽事件
+                piece.addEventListener('dragstart', handleDragStart);
+                piece.addEventListener('dragend', handleDragEnd);
+                
+                // 触摸事件
+                piece.addEventListener('touchstart', handleTouchStart, { passive: false });
+                piece.addEventListener('touchmove', handleTouchMove, { passive: false });
+                piece.addEventListener('touchend', handleTouchEndPiece, { passive: false });
+                
+                // 点击选择（备用）
+                piece.addEventListener('click', () => selectPiece(piece));
+                
+                piecesContainer.appendChild(piece);
+            });
+        }
+
+        // 拖拽开始
+        function handleDragStart(e) {
+            draggedPiece = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', e.target.dataset.value);
+        }
+
+        // 拖拽结束
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            draggedPiece = null;
+        }
+
+        // 拖拽经过
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        // 拖拽进入
+        function handleDragEnter(e) {
+            e.preventDefault();
+            if (!e.target.classList.contains('filled')) {
+                e.target.classList.add('highlight');
+            }
+        }
+
+        // 拖拽离开
+        function handleDragLeave(e) {
+            e.target.classList.remove('highlight');
+        }
+
+        // 放置拼图块
+        function handleDrop(e) {
+            e.preventDefault();
+            const slot = e.target.closest('.puzzle-slot');
+            if (!slot) return;
+
+            slot.classList.remove('highlight');
+
+            if (slot.classList.contains('filled')) return;
+            if (!draggedPiece) return;
+
+            const value = draggedPiece.dataset.value;
+            const index = parseInt(slot.dataset.index);
+            const correctValue = currentPuzzleSequence[index];
+
+            // 放置拼图块
+            slot.textContent = value;
+            slot.classList.add('filled');
+            
+            if (value === correctValue) {
+                slot.classList.add('correct');
+                placedPieces[index] = value;
+                draggedPiece.classList.add('placed');
+                playSound('correct');
+                addScore(5);
+                
+                // 检查是否完成
+                checkPuzzleComplete();
+            } else {
+                slot.classList.add('wrong');
+                playSound('wrong');
+                
+                // 错误后移除
+                setTimeout(() => {
+                    slot.textContent = '';
+                    slot.classList.remove('filled', 'wrong');
+                }, 500);
+            }
+        }
+
+        // 触摸事件处理
+        let touchPiece = null;
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            touchPiece = e.target;
+            touchPiece.classList.add('dragging');
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+        }
+
+        function handleTouchEndPiece(e) {
+            e.preventDefault();
+            if (touchPiece) {
+                touchPiece.classList.remove('dragging');
+                
+                // 找到触摸位置下的目标槽
+                const touch = e.changedTouches[0];
+                const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                const slot = element ? element.closest('.puzzle-slot') : null;
+                
+                if (slot && !slot.classList.contains('filled')) {
+                    simulateDrop(slot, touchPiece);
+                }
+                
+                touchPiece = null;
+            }
+        }
+
+        function handleTouchEnd(e) {
+            // 处理槽的触摸结束事件
+        }
+
+        // 模拟放置
+        function simulateDrop(slot, piece) {
+            if (slot.classList.contains('filled')) return;
+
+            const value = piece.dataset.value;
+            const index = parseInt(slot.dataset.index);
+            const correctValue = currentPuzzleSequence[index];
+
+            slot.textContent = value;
+            slot.classList.add('filled');
+
+            if (value === correctValue) {
+                slot.classList.add('correct');
+                placedPieces[index] = value;
+                piece.classList.add('placed');
+                playSound('correct');
+                addScore(5);
+                checkPuzzleComplete();
+            } else {
+                slot.classList.add('wrong');
+                playSound('wrong');
+                setTimeout(() => {
+                    slot.textContent = '';
+                    slot.classList.remove('filled', 'wrong');
+                }, 500);
+            }
+        }
+
+        // 点击选择拼图块
+        let selectedPiece = null;
+
+        function selectPiece(piece) {
+            if (piece.classList.contains('placed')) return;
+
+            if (selectedPiece) {
+                selectedPiece.style.outline = '';
+            }
+            
+            selectedPiece = piece;
+            piece.style.outline = '3px solid #e17055';
+        }
+
+        // 点击槽放置
+        document.addEventListener('click', (e) => {
+            if (selectedPiece && e.target.classList.contains('puzzle-slot')) {
+                const slot = e.target;
+                if (!slot.classList.contains('filled')) {
+                    simulateDrop(slot, selectedPiece);
+                }
+                selectedPiece.style.outline = '';
+                selectedPiece = null;
+            }
+        });
+
+        // 检查拼图是否完成
+        function checkPuzzleComplete() {
+            const totalPieces = puzzleDifficulty * puzzleDifficulty;
+            
+            if (Object.keys(placedPieces).length === totalPieces) {
+                puzzleCorrectCount++;
+                createConfetti();
+                
+                // 显示完成弹窗
+                setTimeout(() => {
+                    showPuzzleComplete();
+                }, 500);
+            }
+        }
+
+        // 显示拼图完成弹窗
+        function showPuzzleComplete() {
+            const data = puzzleData[puzzleType];
+            const puzzleItem = data.items[currentPuzzleIndex % data.items.length];
+            
+            const overlay = document.createElement('div');
+            overlay.className = 'puzzle-complete-overlay';
+            overlay.id = 'puzzleCompleteOverlay';
+            
+            overlay.innerHTML = `
+                <div class="puzzle-complete-content">
+                    <div class="puzzle-complete-icon">🎉</div>
+                    <div class="puzzle-complete-title">拼图完成！</div>
+                    <div class="puzzle-knowledge-reveal">
+                        <strong>💡 知识点：</strong><br>${puzzleItem.knowledge}
+                    </div>
+                    <button class="btn" onclick="nextPuzzle()">下一关 →</button>
+                    <button class="btn" onclick="backToMenu(); closePuzzleComplete();">返回主页</button>
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+        }
+
+        // 关闭拼图完成弹窗
+        function closePuzzleComplete() {
+            const overlay = document.getElementById('puzzleCompleteOverlay');
+            if (overlay) overlay.remove();
+        }
+
+        // 下一关拼图
+        function nextPuzzle() {
+            closePuzzleComplete();
+            currentPuzzleIndex++;
+            
+            const data = puzzleData[puzzleType];
+            const totalPuzzles = Math.min(data.items.length, 5);
+            
+            if (currentPuzzleIndex >= totalPuzzles) {
+                // 所有关卡完成
+                showPuzzleGameResult();
+            } else {
+                loadPuzzleGame();
+            }
+        }
+
+        // 显示拼图游戏总结果
+        function showPuzzleGameResult() {
+            const score = puzzleCorrectCount * 20;
+            
+            document.getElementById('resultEmoji').textContent = '🏆';
+            document.getElementById('resultTitle').textContent = '拼图大师！';
+            document.getElementById('resultText').textContent = `你完成了 ${puzzleCorrectCount} 个拼图，获得了 ${score} 分！`;
+            document.getElementById('resultModal').classList.add('show');
+            
+            addScore(score);
+            
+            // 重置
+            currentPuzzleIndex = 0;
+            puzzleCorrectCount = 0;
+        }
+
+        // 显示提示
+        function showPuzzleHint() {
+            const data = puzzleData[puzzleType];
+            const puzzleItem = data.items[currentPuzzleIndex % data.items.length];
+            
+            // 找到第一个未放置的正确位置
+            const totalPieces = puzzleDifficulty * puzzleDifficulty;
+            
+            for (let i = 0; i < totalPieces; i++) {
+                if (!placedPieces[i]) {
+                    const correctValue = currentPuzzleSequence[i];
+                    
+                    // 高亮对应的拼图块
+                    const pieces = document.querySelectorAll('.puzzle-piece:not(.placed)');
+                    pieces.forEach(piece => {
+                        if (piece.dataset.value === correctValue) {
+                            piece.style.animation = 'bounce 0.5s ease infinite';
+                            setTimeout(() => {
+                                piece.style.animation = '';
+                            }, 2000);
+                        }
+                    });
+                    
+                    // 高亮目标槽
+                    const slot = document.querySelector(`.puzzle-slot[data-index="${i}"]`);
+                    if (slot) {
+                        slot.classList.add('highlight');
+                        setTimeout(() => {
+                            slot.classList.remove('highlight');
+                        }, 2000);
+                    }
+                    
+                    break;
+                }
+            }
+            
+            // 扣除少量分数
+            if (totalScore > 0) {
+                totalScore = Math.max(0, totalScore - 2);
+                document.getElementById('totalScore').textContent = totalScore;
+            }
+            
+            hintsUsed++;
+        }
+
+        // 重置当前拼图
+        function resetCurrentPuzzle() {
+            loadPuzzleGame();
         }
 
         // 键盘支持
