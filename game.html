@@ -217,6 +217,31 @@
 
         .back-btn:hover {
             transform: scale(1.05);
+        }
+
+        /* 语音开关按钮 */
+        .speech-toggle-btn {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1.3em;
+            cursor: pointer;
+            margin-bottom: 20px;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+        }
+
+        .speech-toggle-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(0, 184, 148, 0.4);
+        }
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
 
@@ -906,6 +931,34 @@
         .puzzle-piece.color-14 { background: linear-gradient(135deg, #686de0, #4834d4); }
         .puzzle-piece.color-15 { background: linear-gradient(135deg, #30336b, #596275); }
         .puzzle-piece.color-16 { background: linear-gradient(135deg, #f8a5c2, #f78fb3); }
+
+        /* 朗读按钮样式 */
+        .speak-btn {
+            background: linear-gradient(135deg, #00b894, #00cec9) !important;
+        }
+
+        .speak-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 184, 148, 0.4);
+        }
+
+        .speak-knowledge-btn {
+            background: linear-gradient(135deg, #fdcb6e, #f39c12);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .speak-knowledge-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -1090,6 +1143,7 @@
         <!-- 拼图游戏 -->
         <div class="game-area" id="puzzleGame">
             <button class="back-btn" onclick="backToMenu()">🏠 返回</button>
+            <button id="speechToggle" class="speech-toggle-btn" onclick="toggleSpeech()" title="关闭语音">🔊</button>
             <h2 class="game-title">🧩 拼图乐园</h2>
             <div class="progress-text">第 <span id="puzzleProgress">1</span> / 5 关</div>
             <div class="progress-bar">
@@ -1125,6 +1179,7 @@
                 <div class="puzzle-knowledge" id="puzzleKnowledge">
                     <div class="knowledge-icon">💡</div>
                     <div class="knowledge-text" id="knowledgeText">完成拼图学习知识！</div>
+                    <button class="speak-knowledge-btn" onclick="speakKnowledge()" title="朗读知识点">🔊</button>
                 </div>
 
                 <!-- 拼图块区域 -->
@@ -1157,6 +1212,63 @@
     <div class="confetti" id="confetti"></div>
 
     <script>
+        // ==================== 语音系统 ====================
+        let speechEnabled = true;
+        let speechSynthesis = window.speechSynthesis;
+        let currentUtterance = null;
+
+        // 语音播报函数
+        function speak(text, rate = 1) {
+            if (!speechEnabled || !speechSynthesis) return;
+            
+            // 取消当前播放
+            speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'zh-CN';
+            utterance.rate = rate;
+            utterance.pitch = 1.1;
+            utterance.volume = 1;
+            
+            // 尝试获取中文语音
+            const voices = speechSynthesis.getVoices();
+            const chineseVoice = voices.find(v => v.lang.includes('zh'));
+            if (chineseVoice) {
+                utterance.voice = chineseVoice;
+            }
+            
+            currentUtterance = utterance;
+            speechSynthesis.speak(utterance);
+        }
+
+        // 停止语音
+        function stopSpeech() {
+            if (speechSynthesis) {
+                speechSynthesis.cancel();
+            }
+        }
+
+        // 切换语音开关
+        function toggleSpeech() {
+            speechEnabled = !speechEnabled;
+            const btn = document.getElementById('speechToggle');
+            if (btn) {
+                btn.textContent = speechEnabled ? '🔊' : '🔇';
+                btn.title = speechEnabled ? '关闭语音' : '开启语音';
+            }
+            if (speechEnabled) {
+                speak('语音提示已开启');
+            }
+        }
+
+        // 页面加载时初始化语音
+        if (speechSynthesis) {
+            speechSynthesis.onvoiceschanged = function() {
+                const voices = speechSynthesis.getVoices();
+                // 预加载中文语音
+            };
+        }
+
         // 游戏数据
         let totalScore = 0;
         let currentGame = null;
@@ -1812,6 +1924,11 @@
             document.querySelectorAll('.puzzle-type-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             currentPuzzleIndex = 0;
+            
+            // 语音提示
+            const typeNames = { number: '数字', letter: '字母', shape: '图形', chinese: '汉字' };
+            speak(`已选择${typeNames[type]}拼图`);
+            
             loadPuzzleGame();
         }
 
@@ -1820,6 +1937,11 @@
             puzzleDifficulty = level;
             document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
+            
+            // 语音提示
+            const diffNames = { 2: '简单', 3: '中等', 4: '困难' };
+            speak(`难度：${diffNames[level]}`);
+            
             loadPuzzleGame();
         }
 
@@ -1855,6 +1977,11 @@
             // 更新网格样式
             const grid = document.getElementById('puzzleTargetGrid');
             grid.style.gridTemplateColumns = `repeat(${puzzleDifficulty}, 1fr)`;
+            
+            // 语音提示当前关卡
+            setTimeout(() => {
+                speak(`第${currentPuzzleIndex + 1}关，请把${data.name}拼到正确位置`);
+            }, 300);
         }
 
         // 创建目标网格
@@ -2036,10 +2163,18 @@
                 piece.classList.add('placed');
                 playSound('correct');
                 addScore(5);
+                
+                // 语音反馈正确
+                speak(`正确！${value}`, 1.2);
+                
                 checkPuzzleComplete();
             } else {
                 slot.classList.add('wrong');
                 playSound('wrong');
+                
+                // 语音提示错误
+                speak('再试一次', 1.2);
+                
                 setTimeout(() => {
                     slot.textContent = '';
                     slot.classList.remove('filled', 'wrong');
@@ -2093,6 +2228,9 @@
             const data = puzzleData[puzzleType];
             const puzzleItem = data.items[currentPuzzleIndex % data.items.length];
             
+            // 语音播报完成和知识点
+            speak(`太棒了！拼图完成！${puzzleItem.knowledge}`, 0.9);
+            
             const overlay = document.createElement('div');
             overlay.className = 'puzzle-complete-overlay';
             overlay.id = 'puzzleCompleteOverlay';
@@ -2104,8 +2242,13 @@
                     <div class="puzzle-knowledge-reveal">
                         <strong>💡 知识点：</strong><br>${puzzleItem.knowledge}
                     </div>
-                    <button class="btn" onclick="nextPuzzle()">下一关 →</button>
-                    <button class="btn" onclick="backToMenu(); closePuzzleComplete();">返回主页</button>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                        <button class="btn speak-btn" onclick="speak('${puzzleItem.knowledge.replace(/'/g, "\\'")}', 0.9)">🔊 朗读知识点</button>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                        <button class="btn" onclick="nextPuzzle()">下一关 →</button>
+                        <button class="btn" onclick="backToMenu(); closePuzzleComplete();">返回主页</button>
+                    </div>
                 </div>
             `;
             
@@ -2116,11 +2259,13 @@
         function closePuzzleComplete() {
             const overlay = document.getElementById('puzzleCompleteOverlay');
             if (overlay) overlay.remove();
+            stopSpeech();
         }
 
         // 下一关拼图
         function nextPuzzle() {
             closePuzzleComplete();
+            stopSpeech();
             currentPuzzleIndex++;
             
             const data = puzzleData[puzzleType];
@@ -2162,6 +2307,9 @@
                 if (!placedPieces[i]) {
                     const correctValue = currentPuzzleSequence[i];
                     
+                    // 语音提示
+                    speak(`提示：找找${correctValue}在哪里`, 1.0);
+                    
                     // 高亮对应的拼图块
                     const pieces = document.querySelectorAll('.puzzle-piece:not(.placed)');
                     pieces.forEach(piece => {
@@ -2197,7 +2345,15 @@
 
         // 重置当前拼图
         function resetCurrentPuzzle() {
+            stopSpeech();
+            speak('重新开始');
             loadPuzzleGame();
+        }
+
+        // 朗读当前知识点
+        function speakKnowledge() {
+            const knowledgeText = document.getElementById('knowledgeText').textContent;
+            speak(knowledgeText, 0.9);
         }
 
         // 键盘支持
